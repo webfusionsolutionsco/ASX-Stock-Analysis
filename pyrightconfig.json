@@ -1,0 +1,8 @@
+{
+  "venvPath": "c:\\Programming\\ASX-Stock-Analysis",
+  "venv": ".venv",
+  "extraPaths": [
+    "c:\\Programming\\ASX-Stock-Analysis",
+    "c:\\Programming\\ASX-Stock-Analysis\\.venv\\Lib\\site-packages"
+  ]
+}

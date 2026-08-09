@@ -1,0 +1,13 @@
+# Core data analysis & manipulation
+pandas>=2.0.0
+numpy>=1.24.0
+
+# Financial data fetching (Yahoo Finance API for ASX stocks, e.g., BHP.AX, CBA.AX, WTC.AX)
+yfinance>=0.2.30
+requests>=2.31.0
+
+# Data visualization (for price charts and yield trends)
+matplotlib>=3.7.0
+
+# Testing framework
+pytest>=7.4.0
