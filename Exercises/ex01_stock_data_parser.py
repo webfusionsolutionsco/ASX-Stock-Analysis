@@ -24,9 +24,21 @@ INSTRUCTIONS:
 ===============================================================================
 """
 
+from _pytest import deprecated
+from _pytest import deprecated
+from _pytest import deprecated
+import string
+from pexpect import expect
+from _pytest._io import terminalwriter
+from _pytest._io import terminalwriter
+from _pytest._io import terminalwriter
+from _pytest._io import terminalwriter
+from _pytest._io import terminalwriter
+from _pytest._io import terminalwriter
+from _pytest._io import terminalwriter
 from typing import List, Dict, Any, Optional
 from dataclasses import dataclass
-
+from datetime import date
 
 @dataclass
 class StockQuote:
@@ -58,6 +70,47 @@ def clean_and_parse_quotes(raw_quotes: List[Dict[str, Any]]) -> List[StockQuote]
             {"ticker": "cba.ax", "date": "2026-08-01", "close_price": -5.00, "volume": 500000},  # Invalid price!
         ]
     """
+    def is_valid_iso_date(date_str: str) -> bool:
+        if not isinstance(date_str, str):
+            return False
+        try:
+            date.fromisoformat(date_str.strip())
+            return True
+        except (ValueError, TypeError):
+            return False
+
+    def parse_quote(raw_quote: Dict[str, Any]) -> Optional[dict[str, Any]]:
+        # Ensure validated keys are present in quote
+        expected_keys = {"ticker", "date", "close_price", "volume"}
+        if not expected_keys.issubset(raw_quote.keys()):
+            print(f"Missing required keys: {expected_keys - raw_quote.keys()}")
+            return None
+
+        # Validate:
+        # Ticker - non empty string, convert to upper case
+        valid_ticker = (
+            isinstance(raw_quote["ticker"], str)
+            and bool(raw_quote["ticker"].strip())
+        )
+        # Close price - positive float
+        valid_close_price =  (
+            isinstance(raw_quote["close_price"], float) 
+            and not isinstance(raw_quote["close_price"], bool) 
+            and raw_quote["close_price"] > 0
+        )
+        # Volume - natural number
+        valid_volume = (
+            isinstance(raw_quote["volume"], int)
+            and raw_quote["volume"] >= 0
+        )
+        # Date - is valid date
+        valid_date = is_valid_iso_date(raw_quote["date"])
+        if (valid_ticker and valid_close_price and valid_volume and valid_date):
+            raw_quote["ticker"] =  raw_quote["ticker"].upper()
+            return raw_quote
+
+    
+
     # TODO: Implement this function
     raise NotImplementedError("Complete clean_and_parse_quotes exercise function")
 
