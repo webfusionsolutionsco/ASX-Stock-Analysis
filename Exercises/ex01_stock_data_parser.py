@@ -130,9 +130,7 @@ def calculate_daily_returns(prices: List[float]) -> List[float]:
     if (len(prices) <= 2):
         return []
     else: 
-        return [calculate_return(price_a, price_b) for price_a, price_b in zip(prices, prices[1:]) ]
-
-
+        return [calculate_return(price_a, price_b) for price_a, price_b in zip(prices, prices[1:])]
 
 def calculate_sma(prices: List[float], window: int) -> List[Optional[float]]:
     """
@@ -160,14 +158,17 @@ def calculate_sma(prices: List[float], window: int) -> List[Optional[float]]:
 
 if __name__ == "__main__":
     print("--- Exercise 01 Demo ---")
-    raw_data = [
+    raw_data_cleaned = [
         {"ticker": "bhp.ax", "date": "2026-08-01", "close_price": 40.0, "volume": 1000000},
         {"ticker": "BHP.AX", "date": "2026-08-02", "close_price": 42.0, "volume": 1200000},
         {"ticker": "BHP.AX", "date": "2026-08-03", "close_price": 41.1, "volume": 900000},
         {"ticker": "INVALID", "date": "2026-08-04", "close_price": -10.0, "volume": 0},
     ]
+    raw_data_returns = [100.0, 105.0, 102.9, 110.2, 112.4, 108.68]
     try:
-        cleaned = clean_and_parse_quotes(raw_data)
+        cleaned = clean_and_parse_quotes(raw_data_cleaned)
         print(f"Cleaned Quotes ({len(cleaned)}):", cleaned)
+        returns = calculate_daily_returns(raw_data_returns)
+        print(f"Daily returns {returns}")
     except NotImplementedError as e:
         print(f"Function not implemented yet: {e}")
