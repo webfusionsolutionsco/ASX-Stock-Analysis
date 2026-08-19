@@ -24,18 +24,7 @@ INSTRUCTIONS:
 ===============================================================================
 """
 
-from _pytest import deprecated
-from _pytest import deprecated
-from _pytest import deprecated
-import string
-from pexpect import expect
-from _pytest._io import terminalwriter
-from _pytest._io import terminalwriter
-from _pytest._io import terminalwriter
-from _pytest._io import terminalwriter
-from _pytest._io import terminalwriter
-from _pytest._io import terminalwriter
-from _pytest._io import terminalwriter
+
 from typing import List, Dict, Any, Optional
 from dataclasses import dataclass
 from datetime import date
@@ -79,7 +68,7 @@ def clean_and_parse_quotes(raw_quotes: List[Dict[str, Any]]) -> List[StockQuote]
         except (ValueError, TypeError):
             return False
 
-    def parse_quote(raw_quote: Dict[str, Any]) -> Optional[dict[str, Any]]:
+    def parse_quote(raw_quote: Dict[str, Any]) -> Optional[StockQuote]:
         # Ensure validated keys are present in quote
         expected_keys = {"ticker", "date", "close_price", "volume"}
         if not expected_keys.issubset(raw_quote.keys()):
@@ -106,14 +95,14 @@ def clean_and_parse_quotes(raw_quotes: List[Dict[str, Any]]) -> List[StockQuote]
         # Date - is valid date
         valid_date = is_valid_iso_date(raw_quote["date"])
         if (valid_ticker and valid_close_price and valid_volume and valid_date):
-            raw_quote["ticker"] =  raw_quote["ticker"].upper()
-            return raw_quote
+            return StockQuote(
+                ticker = raw_quote["ticker"].upper(),
+                date = raw_quote["date"],
+                close_price = raw_quote["close_price"],
+                volume = raw_quote["volume"]
+            )
 
-    
-
-    # TODO: Implement this function
-    raise NotImplementedError("Complete clean_and_parse_quotes exercise function")
-
+    return [validated_quote for quote in raw_quotes if (validated_quote := parse_quote(quote))]
 
 def calculate_daily_returns(prices: List[float]) -> List[float]:
     """
@@ -134,8 +123,15 @@ def calculate_daily_returns(prices: List[float]) -> List[float]:
         prices = [100.0, 105.0, 102.9]
         returns = [5.0, -2.0]
     """
-    # TODO: Implement this function
-    raise NotImplementedError("Complete calculate_daily_returns exercise function")
+    # Function to calculate percentage return given 2 prices in sequential order
+    def calculate_return(price_a: float, price_b: float):
+        return round(((price_b - price_a) / price_a) * 100, 2)
+
+    if (len(prices) <= 2):
+        return []
+    else: 
+        return [calculate_return(price_a, price_b) for price_a, price_b in zip(prices, prices[1:]) ]
+
 
 
 def calculate_sma(prices: List[float], window: int) -> List[Optional[float]]:
