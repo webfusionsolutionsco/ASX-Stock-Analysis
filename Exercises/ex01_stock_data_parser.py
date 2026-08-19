@@ -24,6 +24,7 @@ INSTRUCTIONS:
 ===============================================================================
 """
 
+import pandas as pd
 
 from typing import List, Dict, Any, Optional
 from dataclasses import dataclass
@@ -152,9 +153,16 @@ def calculate_sma(prices: List[float], window: int) -> List[Optional[float]]:
         prices = [10.0, 12.0, 14.0, 16.0, 18.0], window = 3
         Returns: [None, None, 12.0, 14.0, 16.0]
     """
-    # TODO: Implement this function
-    raise NotImplementedError("Complete calculate_sma exercise function")
-
+    if (window < 1):
+        raise ValueError
+        
+    prices_dict = {'value': prices}
+    # Assign pandas dataframe for rolling and mean methods
+    prices_df = pd.DataFrame(prices_dict)
+    # Assign to series
+    sma_series = prices_df['value'].rolling(window).mean()
+    # Replace Nan with None, and convert to list for return
+    return sma_series.astype(object).fillna(None).tolist()
 
 if __name__ == "__main__":
     print("--- Exercise 01 Demo ---")
@@ -165,10 +173,14 @@ if __name__ == "__main__":
         {"ticker": "INVALID", "date": "2026-08-04", "close_price": -10.0, "volume": 0},
     ]
     raw_data_returns = [100.0, 105.0, 102.9, 110.2, 112.4, 108.68]
+    raw_data_prices = [10.0, 12.0, 14.0, 16.0, 18.0]
+    averages_window = 3
     try:
         cleaned = clean_and_parse_quotes(raw_data_cleaned)
         print(f"Cleaned Quotes ({len(cleaned)}):", cleaned)
         returns = calculate_daily_returns(raw_data_returns)
         print(f"Daily returns {returns}")
+        averages = calculate_sma(raw_data_prices, averages_window)
+        print(f"Simple moving averages: {averages}")
     except NotImplementedError as e:
         print(f"Function not implemented yet: {e}")
