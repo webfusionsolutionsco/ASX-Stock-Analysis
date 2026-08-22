@@ -57,8 +57,22 @@ class PortfolioTracker:
         Raises:
             ValueError: If shares <= 0, purchase_price <= 0, or current_price <= 0.
         """
-        # TODO: Implement position addition/update logic
-        raise NotImplementedError("Complete add_or_update_position exercise method")
+        if (shares <= 0 or purchase_price <= 0 or current_price <= 0):
+            raise ValueError("Shares and prices must be greater than 0")
+
+        holding = {
+            "shares": shares,
+            "purchase_price": purchase_price,
+            "current_price": current_price,
+            "dividend_yield_pct": dividend_yield_pct
+        }
+
+        if (ticker in self.holdings.keys()):
+            print(f"Ticker {ticker.upper()} exists, updating")
+        else:
+            print(f"Adding ticker {ticker}")
+
+        self.holdings[ticker] = holding
 
     def total_cost_basis(self) -> float:
         """
@@ -68,8 +82,8 @@ class PortfolioTracker:
         Returns:
             Total cost rounded to 2 decimal places.
         """
-        # TODO: Implement this method
-        raise NotImplementedError("Complete total_cost_basis exercise method")
+
+        return round(sum(holding["shares"] * holding["purchase_price"] for holding in self.holdings.values()), 2)
 
     def total_market_value(self) -> float:
         """
@@ -79,8 +93,7 @@ class PortfolioTracker:
         Returns:
             Total market value rounded to 2 decimal places.
         """
-        # TODO: Implement this method
-        raise NotImplementedError("Complete total_market_value exercise method")
+        return round(sum(holding["shares"] * holding["current_price"] for holding in self.holdings.values()), 2)
 
     def total_unrealized_pnl(self) -> Dict[str, float]:
         """
@@ -92,8 +105,13 @@ class PortfolioTracker:
               - "percentage": Percentage return ((total_market_value - total_cost_basis) / total_cost_basis) * 100, rounded to 2 decimals.
               If cost basis is 0.0, return percentage 0.0.
         """
-        # TODO: Implement this method
-        raise NotImplementedError("Complete total_unrealized_pnl exercise method")
+        total_market_value = self.total_market_value()
+        total_cost_basis = self.total_cost_basis()
+        pnl = {
+            "amount": round(total_market_value - total_cost_basis, 2),
+            "percentage": round(((total_market_value - total_cost_basis) / total_cost_basis) * 100, 2)
+        }
+        return pnl
 
     def get_position_weights(self) -> Dict[str, float]:
         """
@@ -104,8 +122,11 @@ class PortfolioTracker:
             Each weight should be rounded to 2 decimal places.
             If total market value is 0.0, return an empty dictionary.
         """
-        # TODO: Implement this method
-        raise NotImplementedError("Complete get_position_weights exercise method")
+        total_market_value = self.total_market_value()
+
+        def calculate_weight(shares: int, current_price: float):
+            return round(((shares * current_price) / total_market_value) * 100, 2)
+        return {ticker: calculate_weight(holding["shares"], holding["current_price"]) for ticker, holding in self.holdings.items()}
 
     def weighted_dividend_yield(self) -> float:
         """
@@ -119,8 +140,12 @@ class PortfolioTracker:
             Weighted dividend yield rounded to 2 decimal places.
             If total market value is 0.0, return 0.0.
         """
-        # TODO: Implement this method
-        raise NotImplementedError("Complete weighted_dividend_yield exercise method")
+        position_weights = self.get_position_weights()
+        total_market_value = self.total_market_value()
+        if (total_market_value == 0.0):
+            return 0.0
+
+        return round(sum(position_weights[ticker] * holding["dividend_yield_pct"] for ticker, holding in self.holdings.items()) / 100, 2)
 
 
 if __name__ == "__main__":
