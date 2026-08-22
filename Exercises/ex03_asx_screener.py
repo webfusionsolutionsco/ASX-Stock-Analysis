@@ -55,9 +55,22 @@ def screen_value_and_yield_stocks(
     Returns:
       Filtered and sorted DataFrame (with original index reset).
     """
-    # TODO: Implement this function
-    raise NotImplementedError("Complete screen_value_and_yield_stocks exercise function")
-
+    filter_dividend_yield = (df["dividend_yield"] >= min_dividend_yield)
+    filter_pe_ratio = (df["pe_ratio"] > 0) & (df["pe_ratio"] <= max_pe_ratio)
+    filter_market_cap = (df["market_cap"] >= min_market_cap_billions)
+    filter_missing_data = (
+      df["ticker"].notna() 
+      & df["price"].notna() 
+      & df["pe_ratio"].notna() 
+      & df["dividend_yield"].notna()
+    )
+    return df.loc[filter_dividend_yield &
+      filter_pe_ratio &
+      filter_market_cap &
+      filter_missing_data].sort_values(
+      by = ["dividend_yield", "pe_ratio"],
+      ascending = [False, True]
+    )
 
 def add_score_and_rank(df: pd.DataFrame) -> pd.DataFrame:
     """
@@ -78,8 +91,15 @@ def add_score_and_rank(df: pd.DataFrame) -> pd.DataFrame:
     Returns:
       DataFrame with 'composite_score' and 'rank' columns added.
     """
-    # TODO: Implement this function
-    raise NotImplementedError("Complete add_score_and_rank exercise function")
+    # Create a df copy
+    df = df.copy()
+    # Add column
+    df["composite_score"] = round(df["dividend_yield"] * 2 - df["pe_ratio"], 2)
+    # Sort by composite_score descending, and reset index
+    df = df.sort_values(by = "composite_score", ascending = False).reset_index(drop=True)
+    # Add rank
+    df["rank"] = df.index + 1
+    return df
 
 
 if __name__ == "__main__":
